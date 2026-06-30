@@ -1,0 +1,4 @@
+Generic single-database configuration for Alembic.
+
+The database URL is supplied at runtime from app settings (see env.py);
+sqlalchemy.url in alembic.ini is intentionally blank.

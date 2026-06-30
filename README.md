@@ -48,6 +48,9 @@ cp .env.example .env
 
 # 2. Build and start all services
 docker compose up --build
+
+# 3. In a second terminal, apply database migrations (run before using the API)
+docker compose exec backend alembic upgrade head
 ```
 
 - Frontend: http://localhost:3000
@@ -63,8 +66,16 @@ cd backend
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 cp .env.example .env
+
+# Apply database migrations before starting the API
+alembic upgrade head
+
 uvicorn app.main:app --reload
 ```
+
+> **Note:** Migrations must be applied (`alembic upgrade head`) against a running
+> Postgres before the API can read or write audit jobs. When generating new
+> migrations after changing the ORM models, run `alembic revision --autogenerate -m "message"`.
 
 **Frontend**
 
