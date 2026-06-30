@@ -1,23 +1,47 @@
-export default function Home() {
-  return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-8 px-4">
-      <h1 className="text-4xl font-bold tracking-tight">SEO Audit Tool</h1>
+"use client";
 
-      <form className="flex w-full flex-col gap-3 sm:flex-row">
-        <input
-          type="url"
-          name="url"
-          placeholder="https://example.com"
-          aria-label="URL to audit"
-          className="flex-1 rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:border-gray-500 focus:outline-none"
-        />
-        <button
-          type="submit"
-          className="rounded-md bg-gray-900 px-5 py-2 font-medium text-white hover:bg-gray-700"
-        >
-          Audit
-        </button>
-      </form>
-    </main>
+import { useState } from "react";
+
+import AuditForm from "@/components/AuditForm";
+
+interface StartedJob {
+  id: string;
+  url: string;
+}
+
+export default function Home() {
+  const [job, setJob] = useState<StartedJob | null>(null);
+
+  return (
+    <div className="space-y-8">
+      <section className="space-y-2">
+        <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+          Audit a page
+        </h2>
+        <p className="text-sm text-slate-500">
+          Enter a URL to analyze its title, meta tags, headings, images, links,
+          social cards, structured data, and more.
+        </p>
+      </section>
+
+      <AuditForm onStarted={(id, url) => setJob({ id, url })} />
+
+      {/* Placeholder handoff — real polling and results come next. */}
+      {job && (
+        <section className="rounded-xl border border-hairline bg-surface p-5 shadow-sm">
+          <p className="text-sm text-slate-600">
+            Audit started for{" "}
+            <span className="font-medium text-slate-900">{job.url}</span>
+          </p>
+          <p className="mt-1 text-sm text-slate-500">
+            Job{" "}
+            <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-slate-700">
+              {job.id}
+            </code>{" "}
+            (status: pending)
+          </p>
+        </section>
+      )}
+    </div>
   );
 }

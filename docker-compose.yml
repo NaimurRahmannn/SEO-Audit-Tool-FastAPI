@@ -22,7 +22,7 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://seo:seo@postgres:5432/seo_audit
       PSI_API_KEY: ${PSI_API_KEY:-}
-      FRONTEND_ORIGIN: http://localhost:3000
+      FRONTEND_ORIGIN: http://localhost:${FRONTEND_PORT:-3000}
     depends_on:
       postgres:
         condition: service_healthy
@@ -30,7 +30,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
     environment:
       NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
     depends_on:

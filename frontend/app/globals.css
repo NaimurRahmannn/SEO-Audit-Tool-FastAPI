@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* Primary accent (actions, focus) */
+  --color-accent: #4f46e5;
+  --color-accent-hover: #4338ca;
+
+  /* Severity palette: solid foreground + light badge background */
+  --color-pass: #15803d;
+  --color-pass-bg: #dcfce7;
+  --color-warning: #b45309;
+  --color-warning-bg: #fef3c7;
+  --color-fail: #b91c1c;
+  --color-fail-bg: #fee2e2;
+
+  /* Neutral surfaces */
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Smooth, system-native rendering */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
