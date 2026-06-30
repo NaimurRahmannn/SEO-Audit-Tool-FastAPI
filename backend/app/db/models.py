@@ -3,11 +3,14 @@
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import DateTime, String, Text
+from sqlalchemy import JSON, DateTime, String, Text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.session import Base
+
+# JSONB on PostgreSQL (production), generic JSON elsewhere (e.g. SQLite in tests).
+_JSONType = JSONB().with_variant(JSON(), "sqlite")
 
 
 def _utcnow() -> datetime:
@@ -28,5 +31,5 @@ class AuditJobRow(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=_utcnow, onupdate=_utcnow
     )
-    result_json: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
+    result_json: Mapped[dict[str, Any] | None] = mapped_column(_JSONType, nullable=True)
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
