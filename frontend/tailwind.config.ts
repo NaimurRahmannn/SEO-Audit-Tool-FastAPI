@@ -9,25 +9,35 @@ const config: Config = {
     extend: {
       colors: {
         // Semantic tokens backed by CSS variables (see app/globals.css).
-        accent: {
-          DEFAULT: "var(--color-accent)",
-          hover: "var(--color-accent-hover)",
+        primary: {
+          DEFAULT: "var(--color-primary)",
+          soft: "var(--color-primary-soft)",
+          ink: "var(--color-primary-ink)",
         },
         pass: {
           DEFAULT: "var(--color-pass)",
           bg: "var(--color-pass-bg)",
+          ink: "var(--color-pass-ink)",
         },
-        warning: {
-          DEFAULT: "var(--color-warning)",
-          bg: "var(--color-warning-bg)",
+        warn: {
+          DEFAULT: "var(--color-warn)",
+          bg: "var(--color-warn-bg)",
+          ink: "var(--color-warn-ink)",
         },
         fail: {
           DEFAULT: "var(--color-fail)",
           bg: "var(--color-fail-bg)",
+          ink: "var(--color-fail-ink)",
         },
-        surface: "var(--color-surface)",
         canvas: "var(--color-bg)",
-        hairline: "var(--color-border)",
+        surface: "var(--color-surface)",
+        soft: "var(--color-soft)",
+        line: "var(--color-line)",
+        ink: {
+          DEFAULT: "var(--color-ink)",
+          2: "var(--color-ink-2)",
+          3: "var(--color-ink-3)",
+        },
       },
       fontFamily: {
         sans: [

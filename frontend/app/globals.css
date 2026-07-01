@@ -3,32 +3,37 @@
 @tailwind utilities;
 
 :root {
-  /* Primary accent (actions, focus) */
-  --color-accent: #4f46e5;
-  --color-accent-hover: #4338ca;
+  /* Brand emerald */
+  --color-primary: #0f9d5a;
+  --color-primary-soft: #e3f6ec;
+  --color-primary-ink: #0a7043;
 
-  /* Severity palette: solid foreground + light badge background */
-  --color-pass: #15803d;
-  --color-pass-bg: #dcfce7;
-  --color-warning: #b45309;
-  --color-warning-bg: #fef3c7;
-  --color-fail: #b91c1c;
-  --color-fail-bg: #fee2e2;
+  /* Severity — pass / warn / fail, each with a light bg + dark ink */
+  --color-pass: #159f7a;
+  --color-pass-bg: #e4f5f0;
+  --color-pass-ink: #0b6b52;
+  --color-warn: #e2a021;
+  --color-warn-bg: #fbf2df;
+  --color-warn-ink: #8f6210;
+  --color-fail: #e5484d;
+  --color-fail-bg: #fcebec;
+  --color-fail-ink: #a3282c;
 
-  /* Neutral surfaces */
-  --color-bg: #f8fafc;
+  /* Neutrals */
+  --color-bg: #f4f6f5;
   --color-surface: #ffffff;
-  --color-border: #e2e8f0;
-  --color-text: #0f172a;
-  --color-text-muted: #64748b;
+  --color-soft: #f4f7f6;
+  --color-ink: #141a17;
+  --color-ink-2: #556058;
+  --color-ink-3: #95a29b;
+  --color-line: #e8eeeb;
 }
 
 body {
   background-color: var(--color-bg);
-  color: var(--color-text);
+  color: var(--color-ink);
 }
 
-/* Smooth, system-native rendering */
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

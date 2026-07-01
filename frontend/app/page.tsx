@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 
-import AuditForm from "@/components/AuditForm";
+import ChecklistGrid from "@/components/ChecklistGrid";
+import FeatureCards from "@/components/FeatureCards";
+import Hero from "@/components/Hero";
+import SearchCard from "@/components/SearchCard";
 
 interface StartedJob {
   id: string;
@@ -13,35 +16,37 @@ export default function Home() {
   const [job, setJob] = useState<StartedJob | null>(null);
 
   return (
-    <div className="space-y-8">
-      <section className="space-y-2">
-        <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
-          Audit a page
-        </h2>
-        <p className="text-sm text-slate-500">
-          Enter a URL to analyze its title, meta tags, headings, images, links,
-          social cards, structured data, and more.
-        </p>
-      </section>
+    <main className="mx-auto w-full max-w-6xl px-6 pb-20 pt-14 sm:pt-20">
+      <Hero />
 
-      <AuditForm onStarted={(id, url) => setJob({ id, url })} />
+      <div className="mx-auto mt-10 max-w-4xl">
+        <SearchCard onStarted={(id, url) => setJob({ id, url })} />
 
-      {/* Placeholder handoff — real polling and results come next. */}
-      {job && (
-        <section className="rounded-xl border border-hairline bg-surface p-5 shadow-sm">
-          <p className="text-sm text-slate-600">
-            Audit started for{" "}
-            <span className="font-medium text-slate-900">{job.url}</span>
-          </p>
-          <p className="mt-1 text-sm text-slate-500">
-            Job{" "}
-            <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-slate-700">
-              {job.id}
-            </code>{" "}
-            (status: pending)
-          </p>
-        </section>
-      )}
-    </div>
+        {/* Placeholder handoff — live polling and the results view come next. */}
+        {job && (
+          <section className="mx-auto mt-5 max-w-2xl rounded-2xl border border-line bg-surface p-5">
+            <p className="text-sm text-ink-2">
+              Audit started for{" "}
+              <span className="font-semibold text-ink">{job.url}</span>
+            </p>
+            <p className="mt-1 text-sm text-ink-3">
+              Job{" "}
+              <code className="rounded bg-soft px-1.5 py-0.5 font-mono text-xs text-ink-2">
+                {job.id}
+              </code>{" "}
+              (status: pending)
+            </p>
+          </section>
+        )}
+      </div>
+
+      <div className="mt-16">
+        <FeatureCards />
+      </div>
+
+      <div className="mt-6">
+        <ChecklistGrid />
+      </div>
+    </main>
   );
 }
