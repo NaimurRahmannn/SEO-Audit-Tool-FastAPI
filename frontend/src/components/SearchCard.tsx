@@ -6,6 +6,7 @@ import type { FormEvent } from "react";
 import { startAudit } from "@/lib/api";
 import Spinner from "@/components/Spinner";
 import { ArrowRightIcon, GlobeIcon } from "@/components/icons";
+import { toReadableErrorMessage } from "@/lib/error-copy";
 
 const EXAMPLES = ["stripe.com", "airbnb.com", "github.com"];
 
@@ -18,16 +19,27 @@ export default function SearchCard({ onStarted }: SearchCardProps) {
   const [url, setUrl] = useState("");
   const [checkBrokenLinks, setCheckBrokenLinks] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [validationMessage, setValidationMessage] = useState<string | null>(
+    null
+  );
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const describedBy = [
+    validationMessage ? "audit-url-validation" : null,
+    submitError ? "audit-url-submit-error" : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setError(null);
+    setValidationMessage(null);
+    setSubmitError(null);
 
     const trimmed = url.trim();
     if (!trimmed) {
-      setError("Please enter a URL to audit.");
+      setValidationMessage("Enter a URL to audit.");
       return;
     }
 
@@ -37,8 +49,11 @@ export default function SearchCard({ onStarted }: SearchCardProps) {
       const job = await startAudit(trimmed, checkBrokenLinks);
       onStarted(job.id, job.url);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Something went wrong. Please try again."
+      setSubmitError(
+        toReadableErrorMessage(
+          err,
+          "We couldn't start the audit. Please try again."
+        )
       );
     } finally {
       setSubmitting(false);
@@ -47,7 +62,8 @@ export default function SearchCard({ onStarted }: SearchCardProps) {
 
   function applyExample(example: string) {
     setUrl(example);
-    setError(null);
+    setValidationMessage(null);
+    setSubmitError(null);
     inputRef.current?.focus();
   }
 
@@ -56,26 +72,42 @@ export default function SearchCard({ onStarted }: SearchCardProps) {
       <div className="rounded-[18px] bg-surface p-3 shadow-xl shadow-black/[0.06] ring-1 ring-line sm:p-4">
         <form onSubmit={handleSubmit} noValidate>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <div className="flex flex-1 items-center gap-3 px-2 sm:px-3">
-              <GlobeIcon className="h-5 w-5 shrink-0 text-ink-3" />
-              <label htmlFor="audit-url" className="sr-only">
-                Website URL
-              </label>
-              <input
-                id="audit-url"
-                ref={inputRef}
-                name="url"
-                type="text"
-                inputMode="url"
-                autoComplete="url"
-                placeholder="https://example.com"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                disabled={submitting}
-                aria-invalid={error ? true : undefined}
-                aria-describedby={error ? "audit-url-error" : undefined}
-                className="w-full bg-transparent py-3 text-lg text-ink placeholder:text-ink-3 focus:outline-none disabled:opacity-60"
-              />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-3 px-2 sm:px-3">
+                <GlobeIcon className="h-5 w-5 shrink-0 text-ink-3" />
+                <label htmlFor="audit-url" className="sr-only">
+                  Website URL
+                </label>
+                <input
+                  id="audit-url"
+                  ref={inputRef}
+                  name="url"
+                  type="text"
+                  inputMode="url"
+                  autoComplete="url"
+                  placeholder="https://example.com"
+                  value={url}
+                  onChange={(e) => {
+                    setUrl(e.target.value);
+                    setValidationMessage(null);
+                    setSubmitError(null);
+                  }}
+                  disabled={submitting}
+                  aria-invalid={validationMessage ? true : undefined}
+                  aria-describedby={describedBy || undefined}
+                  className="w-full bg-transparent py-3 text-lg text-ink placeholder:text-ink-3 focus:outline-none disabled:opacity-60"
+                />
+              </div>
+
+              {validationMessage && (
+                <p
+                  id="audit-url-validation"
+                  role="alert"
+                  className="px-10 pb-1 text-sm font-medium text-ink-3 sm:px-11"
+                >
+                  {validationMessage}
+                </p>
+              )}
             </div>
 
             <button
@@ -113,13 +145,13 @@ export default function SearchCard({ onStarted }: SearchCardProps) {
         </form>
       </div>
 
-      {error && (
+      {submitError && (
         <p
-          id="audit-url-error"
+          id="audit-url-submit-error"
           role="alert"
           className="mx-auto mt-3 w-fit rounded-lg bg-fail-bg px-3 py-2 text-center text-sm font-medium text-fail-ink"
         >
-          {error}
+          {submitError}
         </p>
       )}
 

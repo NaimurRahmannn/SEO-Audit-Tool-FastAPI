@@ -6,6 +6,7 @@ import {
   ListIcon,
   PhoneIcon,
   RerunIcon,
+  TriangleAlertIcon,
 } from "@/components/icons";
 import { displayUrl, relativeTime, statusLabel } from "@/lib/audit-format";
 import type { AuditResult } from "@/lib/types";
@@ -17,14 +18,88 @@ interface UrlBarProps {
   rerunning: boolean;
 }
 
-export default function UrlBar({ result, requestedUrl, onRerun, rerunning }: UrlBarProps) {
-  const url = displayUrl(result.final_url ?? requestedUrl);
+const NEUTRAL_CHIP = "border-line bg-surface text-ink-2";
+const NEUTRAL_ICON = "text-ink-3";
 
-  const chips: { Icon: ComponentType<{ className?: string }>; label: string }[] = [
-    { Icon: ClockIcon, label: relativeTime(result.fetched_at) },
-    { Icon: PhoneIcon, label: "mobile" },
-    { Icon: CheckTickIcon, label: statusLabel(result.status_code) },
-    { Icon: ListIcon, label: `${result.checks.length} checks` },
+function statusTone(statusCode: number | null) {
+  if (statusCode == null) {
+    return {
+      chipClassName: NEUTRAL_CHIP,
+      iconClassName: NEUTRAL_ICON,
+      Icon: CheckTickIcon,
+    };
+  }
+
+  if (statusCode >= 400) {
+    return {
+      chipClassName: "border-fail-bg bg-fail-bg text-fail-ink",
+      iconClassName: "text-fail",
+      Icon: TriangleAlertIcon,
+    };
+  }
+
+  if (statusCode >= 300) {
+    return {
+      chipClassName: "border-warn-bg bg-warn-bg text-warn-ink",
+      iconClassName: "text-warn",
+      Icon: ClockIcon,
+    };
+  }
+
+  if (statusCode >= 200) {
+    return {
+      chipClassName: "border-pass-bg bg-pass-bg text-pass-ink",
+      iconClassName: "text-pass",
+      Icon: CheckTickIcon,
+    };
+  }
+
+  return {
+    chipClassName: NEUTRAL_CHIP,
+    iconClassName: NEUTRAL_ICON,
+    Icon: CheckTickIcon,
+  };
+}
+
+export default function UrlBar({
+  result,
+  requestedUrl,
+  onRerun,
+  rerunning,
+}: UrlBarProps) {
+  const url = displayUrl(result.final_url ?? requestedUrl);
+  const status = statusTone(result.status_code);
+
+  const chips: {
+    Icon: ComponentType<{ className?: string }>;
+    label: string;
+    chipClassName: string;
+    iconClassName: string;
+  }[] = [
+    {
+      Icon: ClockIcon,
+      label: relativeTime(result.fetched_at),
+      chipClassName: NEUTRAL_CHIP,
+      iconClassName: NEUTRAL_ICON,
+    },
+    {
+      Icon: PhoneIcon,
+      label: "mobile",
+      chipClassName: NEUTRAL_CHIP,
+      iconClassName: NEUTRAL_ICON,
+    },
+    {
+      Icon: status.Icon,
+      label: statusLabel(result.status_code),
+      chipClassName: status.chipClassName,
+      iconClassName: status.iconClassName,
+    },
+    {
+      Icon: ListIcon,
+      label: `${result.checks.length} checks`,
+      chipClassName: NEUTRAL_CHIP,
+      iconClassName: NEUTRAL_ICON,
+    },
   ];
 
   return (
@@ -37,12 +112,12 @@ export default function UrlBar({ result, requestedUrl, onRerun, rerunning }: Url
           {url}
         </h1>
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          {chips.map(({ Icon, label }) => (
+          {chips.map(({ Icon, label, chipClassName, iconClassName }) => (
             <span
               key={label}
-              className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 py-1 text-xs font-medium text-ink-2"
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${chipClassName}`}
             >
-              <Icon className="h-3.5 w-3.5 text-ink-3" />
+              <Icon className={`h-3.5 w-3.5 ${iconClassName}`} />
               {label}
             </span>
           ))}

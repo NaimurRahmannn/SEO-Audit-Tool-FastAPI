@@ -17,6 +17,8 @@ const SEV_ICON: Record<Severity, typeof CheckTickIcon> = {
 export default function CheckCard({ check }: { check: CheckResult }) {
   const { severity } = check;
   const SevIcon = SEV_ICON[severity];
+  const affectedElement = check.affected_element?.trim();
+  const recommendation = check.recommendation?.trim();
 
   return (
     <div className="relative overflow-hidden rounded-xl border border-line bg-surface">
@@ -32,28 +34,34 @@ export default function CheckCard({ check }: { check: CheckResult }) {
             <SevIcon className="h-3.5 w-3.5" />
             {SEVERITY_LABELS[severity]}
           </span>
-          <h4 className="font-bold text-ink">{check.title}</h4>
+          <h4 className="min-w-0 break-words font-bold text-ink [overflow-wrap:anywhere]">
+            {check.title}
+          </h4>
         </div>
 
-        <p className="mt-2 text-ink-2">{check.message}</p>
+        <p className="mt-2 break-words text-ink-2 [overflow-wrap:anywhere]">
+          {check.message}
+        </p>
 
-        {check.affected_element && (
+        {affectedElement && (
           <div className="mt-4">
             <p className="text-xs font-semibold uppercase tracking-wider text-ink-3">
               Where
             </p>
-            <p className="mt-1.5 break-all rounded-lg bg-soft px-3 py-2 font-mono text-sm text-ink-2">
-              {check.affected_element}
+            <p className="mt-1.5 whitespace-pre-wrap break-all rounded-lg bg-soft px-3 py-2 font-mono text-sm text-ink-2 [overflow-wrap:anywhere]">
+              {affectedElement}
             </p>
           </div>
         )}
 
-        {check.recommendation && (
+        {recommendation && (
           <div
             className={`mt-4 flex items-start gap-2 rounded-lg px-3 py-2.5 text-sm ${SEV_RECO[severity]}`}
           >
             <LightbulbIcon className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>{check.recommendation}</span>
+            <span className="min-w-0 break-words [overflow-wrap:anywhere]">
+              {recommendation}
+            </span>
           </div>
         )}
       </div>

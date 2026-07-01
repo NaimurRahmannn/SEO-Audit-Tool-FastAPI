@@ -27,7 +27,9 @@ export default function ResultsView({
   }
 
   if (phase === "failed" || phase === "error") {
-    return <ErrorCard message={error ?? "The audit failed."} onReset={onReset} />;
+    return (
+      <ErrorCard message={error ?? "The audit failed."} onReset={onReset} />
+    );
   }
 
   const result = job?.result;
@@ -38,6 +40,10 @@ export default function ResultsView({
         onReset={onReset}
       />
     );
+  }
+
+  if (result.error && result.checks.length === 0) {
+    return <ErrorCard message={result.error} onReset={onReset} />;
   }
 
   return (
