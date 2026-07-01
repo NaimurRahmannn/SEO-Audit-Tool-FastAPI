@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { BrandMark } from "@/components/icons";
 
 const NAV_LINKS = [
@@ -6,7 +8,7 @@ const NAV_LINKS = [
   { label: "About", href: "#about" },
 ];
 
-export default function Header() {
+export default function Header({ children }: { children?: ReactNode }) {
   return (
     <header className="border-b border-line bg-surface">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6">
@@ -19,17 +21,19 @@ export default function Header() {
           </span>
         </a>
 
-        <nav className="hidden items-center gap-8 sm:flex">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="text-sm font-semibold text-ink-2 transition-colors hover:text-ink"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
+        {children ?? (
+          <nav className="hidden items-center gap-8 sm:flex">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-sm font-semibold text-ink-2 transition-colors hover:text-ink"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        )}
       </div>
     </header>
   );
